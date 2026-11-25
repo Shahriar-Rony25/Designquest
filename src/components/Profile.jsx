@@ -17,14 +17,16 @@ export default function Profile({ xp, completed }) {
 
   const level = Math.floor(xp / 500) + 1;
 
-  const handleSave = (e) => {
+ const handleSave = (e) => {
     e.preventDefault();
-    localStorage.setItem("designquest-username", username);
-    localStorage.setItem("designquest-bio", bio);
+    const cleanUsername = username.trim() || "Rony_Clicks";
+    setUsername(cleanUsername);
+    localStorage.setItem("designquest-username", cleanUsername);
+    localStorage.setItem("designquest-bio", bio.trim());
     window.dispatchEvent(new Event("designquest-username-updated"));
     setIsEditing(false);
   };
-
+  
   return (
     <div className="profile-container">
       <div className="profile-header-card">
