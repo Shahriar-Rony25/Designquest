@@ -1,0 +1,341 @@
+.dq-worldmap {
+  margin-top: 48px;
+  padding: 28px;
+  border-radius: 24px;
+  background: linear-gradient(
+    165deg,
+    rgba(20, 17, 38, 0.92),
+    rgba(9, 9, 15, 0.96)
+  );
+  border: 1px solid rgba(139, 92, 246, 0.26);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.dq-worldmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.dq-worldmap-header h2 {
+  margin: 6px 0;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  color: #f8fafc;
+}
+
+.dq-worldmap-header p {
+  margin: 0;
+  max-width: 560px;
+  color: #a1a1aa;
+  font-size: 0.95rem;
+}
+
+.dq-worldmap-summary {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dq-wm-stat {
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  display: flex;
+  flex-direction: column;
+  min-width: 110px;
+}
+
+.dq-wm-stat strong {
+  color: #ede9fe;
+  font-size: 1.05rem;
+}
+
+.dq-wm-stat span {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+/* Map Stage */
+.dq-map-stage {
+  position: relative;
+  height: 360px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: radial-gradient(
+      circle at 20% 25%,
+      rgba(139, 92, 246, 0.22),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 82% 75%,
+      rgba(56, 189, 248, 0.14),
+      transparent 45%
+    ),
+    #07070d;
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  perspective: 900px;
+}
+
+.dq-map-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(139, 92, 246, 0.09) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.09) 1px, transparent 1px);
+  background-size: 36px 36px;
+  transform: rotateX(24deg) scale(1.12);
+  transform-origin: center bottom;
+  opacity: 0.65;
+}
+
+.dq-map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.dq-route-track {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.22);
+  stroke-width: 1.1;
+  stroke-dasharray: 2.2 2.2;
+}
+
+.dq-route-progress {
+  fill: none;
+  stroke: url(#dqRouteActive);
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.75));
+  transition: stroke-dashoffset 0.55s ease;
+}
+
+/* Nodes */
+.dq-realm-node {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%) translateY(0px);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #f8fafc;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dq-realm-node:hover,
+.dq-realm-node.is-selected {
+  transform: translate(-50%, -50%) translateY(-6px) scale(1.04);
+}
+
+.dq-node-pulse {
+  position: absolute;
+  top: 4px;
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  background: var(--realm-accent, #8b5cf6);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dq-realm-node.is-unlocked .dq-node-pulse {
+  animation: dqPulse 2.6s infinite ease-out;
+}
+
+@keyframes dqPulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.38;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+.dq-node-core {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 13, 29, 0.95);
+  border: 1.5px solid var(--realm-accent, #8b5cf6);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55),
+    0 0 18px color-mix(in srgb, var(--realm-accent, #8b5cf6) 45%, transparent);
+}
+
+.dq-realm-node.is-locked .dq-node-core {
+  border-color: rgba(148, 163, 184, 0.32);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+  opacity: 0.78;
+}
+
+.dq-node-order {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #18152c;
+  border: 1px solid rgba(139, 92, 246, 0.45);
+  color: #ddd6fe;
+}
+
+.dq-node-icon {
+  font-size: 1.15rem;
+}
+
+.dq-node-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: rgba(9, 9, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dq-node-pill {
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.2);
+  color: #e9d5ff;
+}
+
+.dq-realm-node.is-locked .dq-node-pill {
+  background: rgba(148, 163, 184, 0.14);
+  color: #cbd5e1;
+}
+
+.dq-realm-node.is-mastered .dq-node-pill {
+  background: rgba(56, 189, 248, 0.22);
+  color: #bae6fd;
+}
+
+/* Inspector Panel */
+.dq-realm-inspector {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: rgba(14, 12, 27, 0.88);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.dq-inspector-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.dq-inspector-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #c4b5fd;
+}
+
+.dq-inspector-badge {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.14);
+  color: #f3e8ff;
+}
+
+.dq-inspector-main h3 {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+  color: #f8fafc;
+}
+
+.dq-inspector-sub {
+  margin: 0 0 12px;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.dq-inspector-tip {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 2px solid #8b5cf6;
+  color: #cbd5e1;
+  font-size: 0.86rem;
+}
+
+.dq-inspector-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.dq-unlock-copy {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+
+.dq-unlock-bar {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.dq-unlock-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8b5cf6, #c084fc);
+  transition: width 0.35s ease;
+}
+
+.dq-inspector-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  .dq-worldmap {
+    padding: 20px 16px;
+  }
+
+  .dq-map-stage {
+    height: 410px;
+  }
+
+  .dq-node-label {
+    font-size: 0.7rem;
+    max-width: 110px;
+    white-space: normal;
+    text-align: center;
+  }
+}
