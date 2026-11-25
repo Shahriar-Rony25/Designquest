@@ -381,121 +381,136 @@ export default function HomePage() {
         </div>
       </header>
 
-      <section className="stats">
-        <div className="stat-card">
-          <span>⚡</span>
+      {/* Poster-Matched Stats Bar */}
+      <section className="stats poster-stats-strip">
+        <div className="stat-card poster-stat-card">
+          <span className="poster-stat-icon">⚡</span>
           <div>
             <strong>{xp} XP</strong>
-            <small>Experience Points</small>
+            <small>EXPERIENCE POINTS</small>
           </div>
+          <span className="poster-stat-stamp">LIVE</span>
         </div>
-        <div className="stat-card">
-          <span>⭐</span>
+        <div className="stat-card poster-stat-card">
+          <span className="poster-stat-icon">⭐</span>
           <div>
             <strong>Level {level}</strong>
-            <small>Current Rank</small>
+            <small>CURRENT RANK</small>
           </div>
+          <span className="poster-stat-stamp">TIER</span>
         </div>
-        <div className="stat-card">
-          <span>🎯</span>
+        <div className="stat-card poster-stat-card">
+          <span className="poster-stat-icon">🎯</span>
           <div>
-            <strong>{completed.length} Completed</strong>
-            <small>Missions Done</small>
+            <strong>{completed.length}/4</strong>
+            <small>MISSIONS DONE</small>
           </div>
+          <span className="poster-stat-stamp">QUESTS</span>
         </div>
-        <div className="stat-card">
-          <span>🔥</span>
+        <div className="stat-card poster-stat-card">
+          <span className="poster-stat-icon">🔥</span>
           <div>
-            <strong>Active</strong>
-            <small>Streak Status</small>
+            <strong>{currentWorldName}</strong>
+            <small>ACTIVE REALM</small>
           </div>
+          <span className="poster-stat-stamp">MAP</span>
         </div>
       </section>
 
-      <section className="level-section">
-        <div className="section-heading">
+      {/* Poster-Matched Level Progress Section */}
+      <section className="level-section poster-level-panel">
+        <div className="section-heading poster-section-head">
           <div>
-            <h2>Your Journey Progress</h2>
-            <p>Earn XP from quizzes and missions to rank up your designer profile.</p>
+            <span className="poster-ribbon-mini">XP TELEMETRY</span>
+            <h2>YOUR JOURNEY PROGRESS</h2>
+            <p>Earn XP from missions and challenges to unlock higher studio ranks.</p>
           </div>
-          <span className="world-rank">Rank: Level {level}</span>
+          <span className="world-rank poster-rank-pill">RANK · LEVEL {level}</span>
         </div>
-        <div className="progress-track">
+        <div className="progress-track poster-progress-track">
           <div className="progress-fill" style={{ width: `${progressPercent}%` }}></div>
         </div>
-        <small>{xp % 500} / 500 XP to Level {level + 1}</small>
+        <div className="poster-progress-footer">
+          <small>{xp % 500} / 500 XP TO LEVEL {level + 1}</small>
+          <small>{Math.round(progressPercent)}% COMPLETE</small>
+        </div>
       </section>
 
-      <section id="missions" className="missions-section">
-        <div className="section-heading">
+      {/* Poster-Matched Missions Section */}
+      <section id="missions" className="missions-section poster-missions-zone">
+        <div className="section-heading poster-section-head">
           <div>
-            <h2>Creative Missions</h2>
-            <p>Complete hands-on modules to sharpen your design abilities.</p>
+            <span className="poster-ribbon-mini">CURRICULUM DECK</span>
+            <h2>CREATIVE MISSIONS</h2>
+            <p>Complete hands-on modules to sharpen contrast, color, and type craft.</p>
           </div>
-          <strong>{completed.length}/4 Completed</strong>
+          <strong className="poster-counter-box">{completed.length}/4 COMPLETED</strong>
         </div>
 
         <div className="mission-grid">
-          <div className="mission-card">
+          <div className="mission-card poster-mission-card">
             <div className="mission-top">
               <span className="mission-icon">💡</span>
               <span className="free-tag">FREE</span>
             </div>
-            <small>BEGINNER MODULE</small>
-            <h3>1. Design Fundamentals</h3>
-            <p>Learn core foundational principles including contrast, alignment, and visual hierarchy.</p>
+            <small className="poster-module-code">MOD 01 · BEGINNER</small>
+            <h3>1. DESIGN FUNDAMENTALS</h3>
+            <p>Master contrast, alignment, visual hierarchy, and composition balance.</p>
             <div className="mission-bottom">
               <span>+100 XP</span>
-              <button className="mission-btn" onClick={() => handleStartMission(1)}>
-                {completed.includes(1) ? "Replay Mission" : "Start Mission"}
+              <button className="mission-btn poster-action-btn" onClick={() => handleStartMission(1)}>
+                {completed.includes(1) ? "REPLAY MISSION ↻" : "START MISSION →"}
               </button>
             </div>
           </div>
 
-          <div className="mission-card">
+          <div className="mission-card poster-mission-card">
             <div className="mission-top">
               <span className="mission-icon">🎨</span>
               <span className="free-tag">FREE</span>
             </div>
-            <small>BEGINNER MODULE</small>
-            <h3>2. Color Theory Master</h3>
-            <p>Explore palettes, contrast ratios, and color harmonies for stunning digital compositions.</p>
+            <small className="poster-module-code">MOD 02 · BEGINNER</small>
+            <h3>2. COLOR THEORY MASTER</h3>
+            <p>Explore harmonies, saturation, contrast ratios, and expressive palettes.</p>
             <div className="mission-bottom">
               <span>+150 XP</span>
-              <button className="mission-btn" onClick={() => handleStartMission(2)}>
-                {completed.includes(2) ? "Replay Mission" : "Start Mission"}
+              <button className="mission-btn poster-action-btn" onClick={() => handleStartMission(2)}>
+                {completed.includes(2) ? "REPLAY MISSION ↻" : "START MISSION →"}
               </button>
             </div>
           </div>
 
-          <div className="mission-card">
+          <div className="mission-card poster-mission-card">
             <div className="mission-top">
               <span className="mission-icon">✍️</span>
               <span className="free-tag">FREE</span>
             </div>
-            <small>INTERMEDIATE MODULE</small>
-            <h3>3. Typography Challenge</h3>
-            <p>Master font pairings, tracking, leading, and pairing serif with sans-serif fonts.</p>
+            <small className="poster-module-code">MOD 03 · INTERMEDIATE</small>
+            <h3>3. TYPOGRAPHY CHALLENGE</h3>
+            <p>Dial in kerning, leading, display scale, and serif + sans pairings.</p>
             <div className="mission-bottom">
               <span>+200 XP</span>
-              <button className="mission-btn" onClick={() => handleStartMission(3)}>
-                {completed.includes(3) ? "Replay Mission" : "Start Mission"}
+              <button className="mission-btn poster-action-btn" onClick={() => handleStartMission(3)}>
+                {completed.includes(3) ? "REPLAY MISSION ↻" : "START MISSION →"}
               </button>
             </div>
           </div>
 
-          <div className="mission-card">
+          <div className="mission-card poster-mission-card is-pro-card">
             <div className="mission-top">
               <span className="mission-icon">👑</span>
-              <span className="premium-tag">PREMIUM</span>
+              <span className="premium-tag">PRO</span>
             </div>
-            <small>ADVANCED MODULE</small>
-            <h3>4. Professional Branding</h3>
-            <p>Build complete brand identity systems, guidelines, and client presentation decks.</p>
+            <small className="poster-module-code">MOD 04 · ADVANCED</small>
+            <h3>4. PROFESSIONAL BRANDING</h3>
+            <p>Build full identity systems, poster grids, and client pitch decks.</p>
             <div className="mission-bottom">
               <span>+500 XP</span>
-              <button className="mission-btn" onClick={() => alert("Unlock with Premium Membership!")}>
-                Unlock Premium
+              <button
+                className="mission-btn poster-action-btn"
+                onClick={() => alert("Unlock with DesignQuest Pro!")}
+              >
+                UNLOCK PRO ✦
               </button>
             </div>
           </div>
@@ -511,37 +526,57 @@ export default function HomePage() {
         />
       </div>
 
-      <section id="games" className="game-section">
-        <h2>Design Mini-Game</h2>
-        <p>Test your intuition with quick color matching challenges.</p>
-        <div className="game-card">
-          <span className="game-icon">🎯</span>
-          <h3>Complementary Color Match</h3>
-          <p>Which color pairs best with vibrant electric blue to create strong visual contrast?</p>
+      {/* Poster-Matched Mini-Game Section */}
+      <section id="games" className="game-section poster-game-zone">
+        <span className="poster-ribbon-mini">SPEED LAB</span>
+        <h2>DESIGN MINI-GAME</h2>
+        <p>Test your color intuition with fast contrast &amp; harmony picks.</p>
+
+        <div className="game-card poster-game-card">
+          <div className="poster-game-header">
+            <span className="game-icon">🎯</span>
+            <span className="poster-game-tag">COLOR CONTRAST</span>
+          </div>
+          <h3>COMPLEMENTARY COLOR MATCH</h3>
+          <p>
+            Which color pairs best with vibrant electric blue to create high-impact
+            poster contrast?
+          </p>
           <div className="answer-grid">
             <button
-              className="answer-btn"
-              onClick={() => alert("Correct! Orange complements Blue perfectly.")}
+              type="button"
+              className="answer-btn poster-answer-btn"
+              onClick={() => alert("Correct! Warm Orange complements Blue with strong contrast.")}
             >
-              Warm Orange
+              WARM ORANGE
             </button>
             <button
-              className="answer-btn"
-              onClick={() => alert("Not quite. Try a complementary warm tone!")}
+              type="button"
+              className="answer-btn poster-answer-btn"
+              onClick={() => alert("Not quite — try a warm opposite hue!")}
             >
-              Dark Navy
+              DARK NAVY
             </button>
           </div>
         </div>
       </section>
 
-      <section id="premium" className="premium-section">
+      {/* Poster-Matched Pro Banner */}
+      <section id="premium" className="premium-section poster-pro-banner">
         <div>
-          <h2>Unlock DesignQuest Pro</h2>
-          <p>Get unlimited access to advanced branding masterclasses, mentorship sessions, and exclusive portfolio badges.</p>
+          <span className="poster-ribbon-mini">STUDIO ACCESS</span>
+          <h2>UNLOCK DESIGNQUEST PRO</h2>
+          <p>
+            Get full access to pro branding modules, layout kits, and creator
+            badges for your portfolio.
+          </p>
         </div>
-        <button className="premium-cta" onClick={() => alert("Redirecting to checkout...")}>
-          Upgrade to Pro ✨
+        <button
+          type="button"
+          className="premium-cta poster-pro-btn"
+          onClick={() => alert("Redirecting to Pro checkout...")}
+        >
+          UPGRADE TO PRO ✦
         </button>
       </section>
 
