@@ -1,30 +1,28 @@
 import { NextResponse } from "next/server";
-import { db } from "../../../prisma/db";
+import { db } from "@/prisma/db";
 
-const DEFAULT_PROGRESS = {
-  id: 1,
-  xp: 120,
-  completed: "[]",
-  colorRewards: "[false,false,false]",
-};
+const DEFAULT_PROGRESS_ID = 1;
 
 export async function GET() {
   try {
-    let progress = await db.orm.public.PlayerProgress.findUnique({
-      where: { id: 1 },
-    });
+    let progress = await db.orm.public.PlayerProgress
+      .where({ id: DEFAULT_PROGRESS_ID })
+      .first();
 
     if (!progress) {
       progress = await db.orm.public.PlayerProgress.create({
-        data: DEFAULT_PROGRESS,
+        id: DEFAULT_PROGRESS_ID,
+        xp: 0,
+        completed: JSON.stringify([]),
+        colorRewards: JSON.stringify([]),
       });
     }
 
     return NextResponse.json(progress);
   } catch (error) {
-    console.error("GET /api/progress failed:", error);
+    console.error("GET /api/progress error:", error);
     return NextResponse.json(
-      { error: "Failed to load player progress" },
+      { error: "Failed to load progress" },
       { status: 500 }
     );
   }
@@ -34,46 +32,40 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const data: {
-      xp?: number;
-      completed?: string;
-      colorRewards?: string;
-    } = {};
+    const xp = typeof body.xp === "number" ? body.xp : 0;
+    const completed =
+      typeof body.completed === "string"
+        ? body.completed
+        : JSON.stringify(body.completed ?? []);
+    const colorRewards =
+      typeof body.colorRewards === "string"
+        ? body.colorRewards
+        : JSON.stringify(body.colorRewards ?? []);
 
-    if (typeof body.xp === "number") {
-      data.xp = body.xp;
-    }
-
-    if (typeof body.completed === "string") {
-      data.completed = body.completed;
-    } else if (Array.isArray(body.completed)) {
-      data.completed = JSON.stringify(body.completed);
-    }
-
-    if (typeof body.colorRewards === "string") {
-      data.colorRewards = body.colorRewards;
-    } else if (Array.isArray(body.colorRewards)) {
-      data.colorRewards = JSON.stringify(body.colorRewards);
-    }
-
-    const existing = await db.orm.public.PlayerProgress.findUnique({
-      where: { id: 1 },
-    });
+    const existing = await db.orm.public.PlayerProgress
+      .where({ id: DEFAULT_PROGRESS_ID })
+      .first();
 
     const saved = existing
-      ? await db.orm.public.PlayerProgress.update({
-          where: { id: 1 },
-          data,
-        })
+      ? await db.orm.public.PlayerProgress
+          .where({ id: DEFAULT_PROGRESS_ID })
+          .update({
+            xp,
+            completed,
+            colorRewards,
+          })
       : await db.orm.public.PlayerProgress.create({
-          data: { ...DEFAULT_PROGRESS, ...data },
+          id: DEFAULT_PROGRESS_ID,
+          xp,
+          completed,
+          colorRewards,
         });
 
     return NextResponse.json(saved);
   } catch (error) {
-    console.error("POST /api/progress failed:", error);
+    console.error("POST /api/progress error:", error);
     return NextResponse.json(
-      { error: "Failed to save player progress" },
+      { error: "Failed to save progress" },
       { status: 500 }
     );
   }

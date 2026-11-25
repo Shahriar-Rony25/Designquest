@@ -1,5 +1,5 @@
 "use client";
-"import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./Courses.css";
 
 const defaultCourses = [
@@ -31,10 +31,18 @@ const defaultCourses = [
 ];
 
 export default function Courses() {
-  const [courses, setCourses] = useState(() => {
-    const saved = localStorage.getItem("designquest-courses");
-    return saved ? JSON.parse(saved) : defaultCourses;
-  });
+  const [courses, setCourses] = useState(defaultCourses);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("designquest-courses");
+    if (saved) {
+      try {
+        setCourses(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved courses:", e);
+      }
+    }
+  }, []);
   const [activeCourse, setActiveCourse] = useState(null);
 
   useEffect(() => {

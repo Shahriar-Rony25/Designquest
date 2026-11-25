@@ -1,11 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Profile.css";
 
 export default function Profile({ xp, completed }) {
-  const [username, setUsername] = useState(() => localStorage.getItem("designquest-username") || "Rony_Clicks");
-  const [bio, setBio] = useState(() => localStorage.getItem("designquest-bio") || "UI/UX enthusiast, graphic designer & CSE Fest judge.");
+  const [username, setUsername] = useState("Rony_Clicks");
+  const [bio, setBio] = useState("UI/UX enthusiast, graphic designer & CSE Fest judge.");
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const savedUsername = window.localStorage.getItem("designquest-username");
+    if (savedUsername) setUsername(savedUsername);
+
+    const savedBio = window.localStorage.getItem("designquest-bio");
+    if (savedBio) setBio(savedBio);
+  }, []);
 
   const level = Math.floor(xp / 500) + 1;
 

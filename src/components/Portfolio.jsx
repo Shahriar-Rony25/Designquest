@@ -6,7 +6,7 @@ const categories = ["All", "Logo", "Branding", "Poster", "UI/UX", "Social Media"
 
 const sampleProjects = [
   {
-    id: 1,
+    id: "sample-1",
     title: "Creative Brand Identity",
     category: "Branding",
     author: "Rony_Clicks",
@@ -16,7 +16,7 @@ const sampleProjects = [
     comments: ["Amazing color choices!", "Super clean typography!"]
   },
   {
-    id: 2,
+    id: "sample-2",
     title: "Neon Poster Design",
     category: "Poster",
     author: "DesignQuest Creator",
@@ -27,12 +27,86 @@ const sampleProjects = [
   }
 ];
 
+function compressImage(file, maxWidth = 1200, quality = 0.75) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = reject;
+      img.src = event.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function mapDbItemToProject(item, fallbackAuthor = "Rony_Clicks", fallbackDesc = "No description provided.") {
+  return {
+    id: item.id,
+    title: item.title,
+    category: item.category || "Other",
+    author: fallbackAuthor,
+    image: item.imageData || sampleProjects[0].image,
+    description: fallbackDesc,
+    likes: 0,
+    comments: []
+  };
+}
+
 export default function Portfolio() {
   const [activeTab, setActiveTab] = useState("personal");
-  const [projects, setProjects] = useState(() => {
-    const saved = localStorage.getItem("designquest-projects");
-    return saved ? JSON.parse(saved) : sampleProjects;
-  });
+  const [projects, setProjects] = useState(sampleProjects);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadPortfolio() {
+      const saved = window.localStorage.getItem("designquest-projects");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0 && isMounted) {
+            setProjects(parsed);
+          }
+        } catch (e) {
+          console.error("Failed to parse saved projects:", e);
+        }
+      }
+
+      try {
+        const res = await fetch("/api/portfolio", { cache: "no-store" });
+        if (!res.ok) return;
+        const dbItems = await res.json();
+        if (!Array.isArray(dbItems) || dbItems.length === 0 || !isMounted) return;
+
+        const mappedDb = dbItems.map((item) => mapDbItemToProject(item));
+        setProjects((prev) => {
+          const existingIds = new Set(mappedDb.map((p) => String(p.id)));
+          const localExtras = prev.filter((p) => !existingIds.has(String(p.id)));
+          return [...mappedDb, ...localExtras];
+        });
+      } catch (err) {
+        console.error("Failed to fetch /api/portfolio:", err);
+      }
+    }
+
+    loadPortfolio();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
@@ -45,38 +119,69 @@ export default function Portfolio() {
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("designquest-projects", JSON.stringify(projects));
+    try {
+      window.localStorage.setItem("designquest-projects", JSON.stringify(projects));
+    } catch (e) {
+      console.warn("Could not save projects to localStorage:", e);
+    }
   }, [projects]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImageFile(reader.result);
-      reader.readAsDataURL(file);
+  const handleImageChange = async (e) => {
+    setUploadError("");
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const compressed = await compressImage(file);
+      setImageFile(compressed);
+    } catch (err) {
+      console.error("Error compressing image:", err);
+      setUploadError("Could not process that image. Please try another file.");
     }
   };
 
-  const handleAddProject = (e) => {
+  const handleAddProject = async (e) => {
     e.preventDefault();
-    if (!title || !imageFile) return;
+    if (!title.trim() || !imageFile || isSubmitting) return;
 
-    const newProj = {
-      id: Date.now(),
-      title,
-      category: projCategory,
-      author: localStorage.getItem("designquest-username") || "Rony_Clicks",
-      image: imageFile,
-      description: desc || "No description provided.",
-      likes: 0,
-      comments: []
-    };
+    setIsSubmitting(true);
+    setUploadError("");
 
-    setProjects([newProj, ...projects]);
-    setTitle("");
-    setDesc("");
-    setImageFile(null);
-    setShowForm(false);
+    const currentAuthor = window.localStorage.getItem("designquest-username") || "Rony_Clicks";
+    const finalDesc = desc.trim() || "No description provided.";
+
+    try {
+      const res = await fetch("/api/portfolio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          category: projCategory,
+          imageData: imageFile,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Upload failed (${res.status})`);
+      }
+
+      const createdItem = await res.json();
+      const newProj = {
+        ...mapDbItemToProject(createdItem, currentAuthor, finalDesc),
+      };
+
+      setProjects((prev) => [newProj, ...prev]);
+      setTitle("");
+      setDesc("");
+      setImageFile(null);
+      setShowForm(false);
+    } catch (err) {
+      console.error("POST /api/portfolio failed:", err);
+      setUploadError(err.message || "Failed to save project to server.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLike = (id, e) => {
@@ -131,6 +236,7 @@ export default function Portfolio() {
       {showForm && (
         <form className="project-form" onSubmit={handleAddProject}>
           <h3>Upload New Design Project</h3>
+          {uploadError && <p style={{ color: "#ff7b7b", fontSize: "13px" }}>{uploadError}</p>}
           <input type="text" placeholder="Project Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
           <select value={projCategory} onChange={(e) => setProjCategory(e.target.value)}>
             {categories.filter(c => c !== "All").map(c => <option key={c} value={c}>{c}</option>)}
@@ -138,7 +244,9 @@ export default function Portfolio() {
           <textarea placeholder="Project Description..." value={desc} onChange={(e) => setDesc(e.target.value)} />
           <input type="file" accept="image/*" onChange={handleImageChange} required />
           {imageFile && <img src={imageFile} alt="Preview" className="image-preview" />}
-          <button type="submit" className="submit-btn">Publish Project</button>
+          <button type="submit" className="submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Publishing..." : "Publish Project"}
+          </button>
         </form>
       )}
 
