@@ -1,0 +1,119 @@
+.courses-container {
+  padding: 40px 10%;
+  max-width: 1300px;
+  margin: 0 auto;
+  color: white;
+}
+
+.courses-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.courses-header h2 {
+  font-size: 2.5rem;
+  color: #a78bfa;
+  margin-bottom: 10px;
+}
+
+.courses-header p {
+  color: #aaa8bc;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.course-card {
+  background: #12111c;
+  border: 1px solid #29253b;
+  border-radius: 18px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  border-color: #8b5cf6;
+}
+
+.course-cat {
+  display: inline-block;
+  background: #282437;
+  color: #c4b5fd;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  width: fit-content;
+}
+
+.course-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.course-desc {
+  color: #aaa8bc;
+  font-size: 13px;
+  line-height: 1.6;
+  flex-grow: 1;
+  margin-bottom: 15px;
+}
+
+.course-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #9693a8;
+  margin-bottom: 15px;
+}
+
+.course-progress-bar {
+  height: 8px;
+  background: #282437;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.course-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #c084fc);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.lesson-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.lesson-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1e1a2f;
+  border: 1px solid #3b3058;
+  padding: 12px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lesson-item:hover {
+  background: #27213e;
+}
+
+.lesson-item input {
+  cursor: pointer;
+  accent-color: #8b5cf6;
+  width: 18px;
+  height: 18px;
+}

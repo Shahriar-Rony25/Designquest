@@ -1,0 +1,36 @@
+// use prisma-8
+
+model User {
+  id        Int                @id @default(autoincrement())
+  email     String             @unique
+  username  String?
+  name      String?
+  posts     Post[]
+  createdAt DateTime           @default(now()) @onCreate(now())
+  updatedAt temporal.UpdatedAt
+}
+
+model Post {
+  id        Int                @id @default(autoincrement())
+  title     String
+  content   String?
+  author    User               @relation(fields: [authorId], references: [id])
+  authorId  Int
+  createdAt DateTime           @default(now()) @onCreate(now())
+  updatedAt temporal.UpdatedAt
+}
+model PlayerProgress {
+  id           Int                  @id @default(1)
+  xp           Int                  @default(120)
+  completed    String               @default("[]")
+  colorRewards String               @default("[false,false,false]")
+  updatedAt    temporal.UpdatedAt
+}
+
+model PortfolioItem {
+  id        Int      @id @default(autoincrement())
+  title     String
+  category  String   @default("General")
+  imageData String?
+  createdAt DateTime @default(now())
+}
