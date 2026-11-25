@@ -1,17 +1,17 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import WorldMap from "@/components/WorldMap";
 
 export default function HomePage() {
-  // Persistent XP and Progress State (safe in Next.js SSR + client)
   const [xp, setXp] = useState(120);
   const [completed, setCompleted] = useState([]);
   const [colorRewards, setColorRewards] = useState([false, false, false]);
   const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Interactive 3D Hero Tilt State
   const [heroTilt, setHeroTilt] = useState({ rx: 6, ry: -10 });
+  const [activeLeftTool, setActiveLeftTool] = useState("marquee");
+  const [activeRightTool, setActiveRightTool] = useState("pen");
 
   useEffect(() => {
     try {
@@ -29,7 +29,6 @@ export default function HomePage() {
     }
   }, []);
 
-  // Save progress automatically after initial load
   useEffect(() => {
     if (!hasLoaded) return;
     try {
@@ -42,11 +41,9 @@ export default function HomePage() {
     }
   }, [xp, completed, colorRewards, hasLoaded]);
 
-  // Level Calculations
   const level = Math.floor(xp / 500) + 1;
   const progressPercent = Math.min(100, (xp % 500) / 5);
 
-  // Mission Modal State
   const [activeMission, setActiveMission] = useState(null);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -54,7 +51,6 @@ export default function HomePage() {
   const [quizScore, setQuizScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
 
-  // Quiz Datasets for Missions 1, 2, and 3
   const missionQuizzes = {
     1: {
       title: "Mission 1: Design Fundamentals",
@@ -191,7 +187,6 @@ export default function HomePage() {
   const currentWorldName =
     worldNames[Math.min(level - 1, worldNames.length - 1)] || worldNames[0];
 
-  // Pointer handler for 3D perspective stage
   const handleHeroMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / rect.width - 0.5;
@@ -221,27 +216,84 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 3D Hero Section */}
       <header
         id="home"
-        className="hero hero-3d-stage"
+        className="hero poster-hero-stage"
         onMouseMove={handleHeroMouseMove}
         onMouseLeave={handleHeroMouseLeave}
       >
-        <div className="hero-3d-grid" aria-hidden="true" />
+        <div className="poster-bg-grid" aria-hidden="true" />
+        <div className="poster-ghost-type" aria-hidden="true">
+          GRAPHIC DESIGN
+        </div>
 
-        <div className="hero-content">
-          <span className="eyebrow">3D GAMIFIED CREATIVE ECOSYSTEM</span>
+        <aside
+          className="tool-panel-3d tool-panel-left"
+          aria-label="Design selection and layout tools"
+          style={{
+            transform: `perspective(1100px) rotateY(${18 + heroTilt.ry * 0.45}deg) rotateX(${
+              8 + heroTilt.rx * 0.45
+            }deg) rotateZ(-6deg)`,
+          }}
+        >
+          <div className="tool-panel-cap" />
+          <button
+            type="button"
+            className={`tool-slot ${activeLeftTool === "marquee" ? "is-active" : ""}`}
+            title="Marquee Selection"
+            onClick={() => setActiveLeftTool("marquee")}
+          >
+            ⬚
+          </button>
+          <button
+            type="button"
+            className={`tool-slot ${activeLeftTool === "lasso" ? "is-active" : ""}`}
+            title="Lasso / Freehand"
+            onClick={() => setActiveLeftTool("lasso")}
+          >
+            ✎
+          </button>
+          <button
+            type="button"
+            className={`tool-slot ${activeLeftTool === "frame" ? "is-active" : ""}`}
+            title="Crop & Frame"
+            onClick={() => setActiveLeftTool("frame")}
+          >
+            ⊞
+          </button>
+          <button
+            type="button"
+            className={`tool-slot ${activeLeftTool === "eyedropper" ? "is-active" : ""}`}
+            title="Eyedropper"
+            onClick={() => setActiveLeftTool("eyedropper")}
+          >
+            💧
+          </button>
+          <div className="tool-panel-divider" />
+          <div className="tool-swatch-pair" aria-hidden="true">
+            <span className="swatch-front" />
+            <span className="swatch-back" />
+          </div>
+        </aside>
+
+        <div className="poster-hero-center">
+          <div className="poster-kicker-row">
+            <span className="poster-ribbon-tag">LEVEL {level} STUDIO</span>
+            <span className="eyebrow">3D GAMIFIED CREATIVE ECOSYSTEM</span>
+          </div>
+
           <h1>
-            Level Up Your <span>Design Skills</span> &amp; Portfolio
+            LEVEL UP YOUR <span>DESIGN SKILLS</span>
+            <span className="poster-headline-pill">TO CRAFT STUNNING VISUALS</span>
           </h1>
-          <p>
-            Embark on creative adventures, master graphic design principles
-            through interactive missions, and showcase your work to the
-            community.
+
+          <p className="poster-subcopy">
+            Master contrast, color theory, and typography through interactive
+            missions in <strong>{currentWorldName}</strong> — built for creators
+            leveling up their craft.
           </p>
 
-          <div className="hero-actions">
+          <div className="hero-actions poster-actions">
             <a href="#missions" className="primary-btn">
               Start Learning Now 🚀
             </a>
@@ -249,45 +301,86 @@ export default function HomePage() {
               Explore World Map 🗺️
             </a>
           </div>
+
+          <div className="poster-disciplines" aria-label="Design disciplines">
+            <span>LOGO</span>
+            <span>MENU</span>
+            <span>COVER</span>
+            <span>BANNER</span>
+            <span>POSTER</span>
+            <span>FLYER</span>
+            <span>BRANDING</span>
+            <span>UI</span>
+          </div>
         </div>
 
-        <div className="hero-3d-viewport">
-          <div
-            className="hero-3d-cube-stack"
-            style={{
-              transform: `rotateX(${heroTilt.rx}deg) rotateY(${heroTilt.ry}deg)`,
-            }}
+        <aside
+          className="tool-panel-3d tool-panel-right"
+          aria-label="Vector, pen, and typography tools"
+          style={{
+            transform: `perspective(1100px) rotateY(${-18 + heroTilt.ry * 0.45}deg) rotateX(${
+              8 + heroTilt.rx * 0.45
+            }deg) rotateZ(6deg)`,
+          }}
+        >
+          <div className="tool-panel-cap" />
+          <button
+            type="button"
+            className={`tool-slot ${activeRightTool === "move" ? "is-active" : ""}`}
+            title="Move & Transform"
+            onClick={() => setActiveRightTool("move")}
           >
-            <div className="hero-3d-backplate">
-              <div className="hero-3d-swatches">
-                <span style={{ background: "#8b5cf6" }} />
-                <span style={{ background: "#ec4899" }} />
-                <span style={{ background: "#38bdf8" }} />
-                <span style={{ background: "#facc15" }} />
-              </div>
-              <small>
-                3D DEPTH · {completed.length}/4 MISSIONS DONE
-              </small>
-            </div>
+            ✥
+          </button>
+          <button
+            type="button"
+            className={`tool-slot ${activeRightTool === "pen" ? "is-active" : ""}`}
+            title="Pen / Bezier Path"
+            onClick={() => setActiveRightTool("pen")}
+          >
+            ✒
+          </button>
+          <button
+            type="button"
+            className={`tool-slot ${activeRightTool === "shape" ? "is-active" : ""}`}
+            title="Shape Builder"
+            onClick={() => setActiveRightTool("shape")}
+          >
+            ◇
+          </button>
+          <button
+            type="button"
+            className={`tool-slot ${activeRightTool === "brush" ? "is-active" : ""}`}
+            title="Brush & Stroke"
+            onClick={() => setActiveRightTool("brush")}
+          >
+            🖌
+          </button>
+          <button
+            type="button"
+            className={`tool-slot ${activeRightTool === "type" ? "is-active" : ""}`}
+            title="Typography"
+            onClick={() => setActiveRightTool("type")}
+          >
+            T
+          </button>
+          <div className="tool-badge-xp">+{xp} XP</div>
+        </aside>
 
-            <div className="hero-3d-core">
-              <div className="hero-art">🎨</div>
-            </div>
-
-            <div className="floating-card">
-              <span>🏆</span>
-              <div>
-                <strong>Level {level} Creator</strong>
-                <small>{currentWorldName}</small>
-              </div>
-            </div>
-
-            <div className="floating-xp">+{xp} XP Total</div>
-          </div>
+        <div className="poster-bottom-bar">
+          <a href="#missions" className="poster-cta-stamp">
+            PLAY NOW!
+          </a>
+          <span className="poster-bar-sep" aria-hidden="true">|</span>
+          <span>{completed.length}/4 MISSIONS DONE</span>
+          <span className="poster-bar-sep" aria-hidden="true">|</span>
+          <span>{currentWorldName.toUpperCase()}</span>
+          <span className="poster-bar-sep" aria-hidden="true">|</span>
+          <span>{xp} XP EARNED</span>
+          <span className="poster-bar-brand">DESIGNQUEST · 300</span>
         </div>
       </header>
 
-      {/* Stats Bar */}
       <section className="stats">
         <div className="stat-card">
           <span>⚡</span>
@@ -319,7 +412,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Level Progress Section */}
       <section className="level-section">
         <div className="section-heading">
           <div>
@@ -334,7 +426,6 @@ export default function HomePage() {
         <small>{xp % 500} / 500 XP to Level {level + 1}</small>
       </section>
 
-      {/* Missions Section */}
       <section id="missions" className="missions-section">
         <div className="section-heading">
           <div>
@@ -411,7 +502,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* World Map Component */}
       <div id="world">
         <WorldMap
           xp={xp}
@@ -421,7 +511,6 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Mini Games Section */}
       <section id="games" className="game-section">
         <h2>Design Mini-Game</h2>
         <p>Test your intuition with quick color matching challenges.</p>
@@ -446,7 +535,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Premium Section */}
       <section id="premium" className="premium-section">
         <div>
           <h2>Unlock DesignQuest Pro</h2>
@@ -457,7 +545,6 @@ export default function HomePage() {
         </button>
       </section>
 
-      {/* Mission Quiz Modal */}
       {activeMission && currentQuizData && (
         <div className="mission-overlay">
           <div className="mission-play-card">
