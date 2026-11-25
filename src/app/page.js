@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import WorldMap from "@/components/WorldMap";
+import PortfolioShowcase from "@/components/PortfolioShowcase";
 
 export default function HomePage() {
   // Persistent XP and Progress State (safe in Next.js SSR + client)
@@ -216,7 +217,7 @@ export default function HomePage() {
   };
 
   const handleSelectRealmCategory = () => {
-    document.getElementById("missions")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -420,6 +421,9 @@ export default function HomePage() {
           onSelectRealmCategory={handleSelectRealmCategory}
         />
       </div>
+
+      {/* Behance-Style Long-Grid Portfolio & Full-Screen Viewer */}
+      <PortfolioShowcase />
 
       {/* Mini Games Section */}
       <section id="games" className="game-section">
