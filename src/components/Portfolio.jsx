@@ -10,6 +10,7 @@ const sampleProjects = [
     title: "Creative Brand Identity",
     category: "Branding",
     author: "Rony_Clicks",
+    isOwnProject: true,
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60",
     description: "A modern, minimalist brand identity package designed for a tech startup.",
     likes: 14,
@@ -20,6 +21,7 @@ const sampleProjects = [
     title: "Neon Poster Design",
     category: "Poster",
     author: "DesignQuest Creator",
+    isOwnProject: false,
     image: "https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=60",
     description: "A cyberpunk-inspired vibrant poster featuring high-contrast neon lighting and custom typography.",
     likes: 22,
@@ -50,12 +52,13 @@ function compressImage(file, maxWidth = 1200, quality = 0.75) {
   });
 }
 
-function mapDbItemToProject(item, fallbackAuthor = "Rony_Clicks", fallbackDesc = "No description provided.") {
+function mapDbItemToProject(item, fallbackAuthor = "Rony_Clicks", fallbackDesc = "No description provided.", isOwnProject = true) {
   return {
     id: item.id,
     title: item.title,
     category: item.category || "Other",
     author: fallbackAuthor,
+    isOwnProject,
     image: item.imageData || sampleProjects[0].image,
     description: fallbackDesc,
     likes: 0,
@@ -68,9 +71,35 @@ export default function Portfolio() {
   const [projects, setProjects] = useState(sampleProjects);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [currentUsername, setCurrentUsername] = useState("Rony_Clicks");
+
+  const getDisplayAuthor = (proj) => {
+    if (!proj) return currentUsername;
+    return proj.isOwnProject ? currentUsername : proj.author;
+  };
+
+  useEffect(() => {
+    const syncUsername = () => {
+      const savedName = window.localStorage.getItem("designquest-username");
+      if (savedName && savedName.trim()) {
+        setCurrentUsername(savedName.trim());
+      }
+    };
+
+    syncUsername();
+    window.addEventListener("storage", syncUsername);
+    window.addEventListener("designquest-username-updated", syncUsername);
+
+    return () => {
+      window.removeEventListener("storage", syncUsername);
+      window.removeEventListener("designquest-username-updated", syncUsername);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
+    const savedName = window.localStorage.getItem("designquest-username");
+    const activeName = savedName && savedName.trim() ? savedName.trim() : "Rony_Clicks";
 
     async function loadPortfolio() {
       const saved = window.localStorage.getItem("designquest-projects");
@@ -91,7 +120,9 @@ export default function Portfolio() {
         const dbItems = await res.json();
         if (!Array.isArray(dbItems) || dbItems.length === 0 || !isMounted) return;
 
-        const mappedDb = dbItems.map((item) => mapDbItemToProject(item));
+        const mappedDb = dbItems.map((item) =>
+          mapDbItemToProject(item, activeName, "No description provided.", true)
+        );
         setProjects((prev) => {
           const existingIds = new Set(mappedDb.map((p) => String(p.id)));
           const localExtras = prev.filter((p) => !existingIds.has(String(p.id)));
@@ -147,7 +178,8 @@ export default function Portfolio() {
     setIsSubmitting(true);
     setUploadError("");
 
-    const currentAuthor = window.localStorage.getItem("designquest-username") || "Rony_Clicks";
+    const savedName = window.localStorage.getItem("designquest-username");
+    const currentAuthor = savedName && savedName.trim() ? savedName.trim() : currentUsername;
     const finalDesc = desc.trim() || "No description provided.";
 
     try {
@@ -168,7 +200,9 @@ export default function Portfolio() {
 
       const createdItem = await res.json();
       const newProj = {
-        ...mapDbItemToProject(createdItem, currentAuthor, finalDesc),
+        ...mapDbItemToProject(createdItem, currentAuthor, finalDesc, true),
+        author: currentAuthor,
+        isOwnProject: true,
       };
 
       setProjects((prev) => [newProj, ...prev]);
@@ -260,7 +294,7 @@ export default function Portfolio() {
               <div className="project-info">
                 <span className="project-category">{proj.category}</span>
                 <h4>{proj.title}</h4>
-                <p className="project-author">By {proj.author}</p>
+                <p className="project-author">By {getDisplayAuthor(proj)}</p>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
                   <button className="like-btn" onClick={(e) => handleLike(proj.id, e)}>
                     ❤️ {proj.likes}
@@ -280,7 +314,7 @@ export default function Portfolio() {
             <img src={selectedProject.image} alt={selectedProject.title} />
             <h3>{selectedProject.title}</h3>
             <span className="modal-category">{selectedProject.category}</span>
-            <p className="modal-author">Created by: {selectedProject.author}</p>
+            <p className="modal-author">Created by: {getDisplayAuthor(selectedProject)}</p>
             <p className="modal-desc">{selectedProject.description}</p>
             
             <div style={{ margin: "15px 0", display: "flex", gap: "15px", alignItems: "center" }}>

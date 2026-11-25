@@ -21,6 +21,7 @@ export default function Profile({ xp, completed }) {
     e.preventDefault();
     localStorage.setItem("designquest-username", username);
     localStorage.setItem("designquest-bio", bio);
+    window.dispatchEvent(new Event("designquest-username-updated"));
     setIsEditing(false);
   };
 
