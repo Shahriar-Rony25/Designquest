@@ -1,9 +1,9 @@
-.behance-section {
+.fw-portfolio {
   padding: 65px 10%;
   border-top: 1px solid #242333;
 }
 
-.behance-header {
+.fw-portfolio-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -11,22 +11,22 @@
   flex-wrap: wrap;
 }
 
-.behance-header p {
+.fw-portfolio-head p {
+  margin: 6px 0 0;
   color: #aaa8bc;
   font-size: 14px;
   line-height: 1.7;
   max-width: 580px;
-  margin: 6px 0 0;
 }
 
-.behance-filters {
+.fw-filter-row {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: wrap;
   margin-top: 24px;
 }
 
-.behance-filter-btn {
+.fw-filter-btn {
   padding: 9px 16px;
   border-radius: 999px;
   background: #141220;
@@ -38,19 +38,19 @@
   transition: all 0.2s ease;
 }
 
-.behance-filter-btn:hover {
+.fw-filter-btn:hover {
   border-color: #8b5cf6;
   color: #ffffff;
 }
 
-.behance-filter-btn.is-active {
+.fw-filter-btn.active {
   background: linear-gradient(120deg, #8b5cf6, #6d45d5);
   border-color: transparent;
   color: #ffffff;
 }
 
 /* Composer */
-.behance-composer {
+.fw-composer {
   margin-top: 24px;
   padding: 22px;
   border-radius: 16px;
@@ -58,13 +58,13 @@
   border: 1px solid #393254;
 }
 
-.composer-grid {
+.fw-composer-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
-.behance-composer label {
+.fw-composer label {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -72,9 +72,9 @@
   color: #c4b5fd;
 }
 
-.behance-composer input,
-.behance-composer select,
-.behance-composer textarea {
+.fw-composer input,
+.fw-composer select,
+.fw-composer textarea {
   padding: 10px 12px;
   border-radius: 9px;
   border: 1px solid #352f4d;
@@ -84,136 +84,73 @@
   font-size: 13px;
 }
 
-.composer-summary {
+.fw-composer-notes {
   margin-top: 14px;
 }
 
-.composer-notice {
+.fw-notice {
+  margin: 10px 0 0;
   color: #fbbf24;
   font-size: 12px;
-  margin: 10px 0 0;
 }
 
-.composer-actions {
+.fw-composer-submit {
   margin-top: 16px;
   display: flex;
   justify-content: flex-end;
 }
 
-/* Long-grid stack */
-.behance-long-grid {
-  margin-top: 32px;
+/* Project Grid */
+.fw-project-grid {
+  margin-top: 30px;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 36px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
 }
 
-.behance-project-card {
-  padding: 26px;
-  border-radius: 20px;
-  background: linear-gradient(160deg, rgba(22, 19, 36, 0.96), rgba(12, 11, 20, 0.98));
+.fw-project-tile {
+  background: linear-gradient(160deg, rgba(24, 21, 38, 0.96), rgba(14, 12, 23, 0.98));
   border: 1px solid #2e2944;
-  box-shadow: 0 22px 48px -20px rgba(0, 0, 0, 0.85);
-}
-
-.behance-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.behance-index {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1.4px;
-  color: #a78bfa;
-}
-
-.behance-card-top h3 {
-  margin: 6px 0 0;
-  font-size: 22px;
-}
-
-.behance-fullscreen-trigger {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: 1px solid #554277;
-  background: #221b38;
-  color: #f8f7ff;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-.behance-fullscreen-trigger:hover {
-  transform: translateY(-2px);
-  background: #7c3aed;
-  border-color: #c084fc;
-}
-
-.behance-summary {
-  color: #aaa8bc;
-  font-size: 14px;
-  line-height: 1.7;
-  margin: 12px 0 20px;
-  max-width: 760px;
-}
-
-.behance-plate-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.behance-plate {
-  position: relative;
-  border-radius: 14px;
-  border: 1px solid rgba(167, 139, 250, 0.24);
+  border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 22px;
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.behance-plate:hover {
-  transform: translateY(-3px);
+.fw-project-tile:hover {
+  transform: translateY(-6px);
   border-color: rgba(192, 132, 252, 0.65);
+  box-shadow: 0 22px 44px -16px rgba(0, 0, 0, 0.85), 0 0 24px -8px rgba(139, 92, 246, 0.45);
 }
 
-.behance-plate-wide {
-  min-height: 240px;
+.fw-tile-preview {
+  position: relative;
+  height: 230px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 1px solid #29243d;
+  overflow: hidden;
 }
 
-.behance-plate-tall {
-  min-height: 340px;
-}
-
-.behance-plate-image {
-  padding: 0;
-  min-height: 280px;
-  max-height: 620px;
-}
-
-.behance-plate-image img {
+.fw-tile-preview img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-.plate-badge {
-  position: absolute;
-  top: 16px;
-  left: 18px;
+.fw-tile-tag {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.4px;
   padding: 5px 10px;
   border-radius: 999px;
   background: rgba(9, 9, 15, 0.72);
@@ -221,104 +158,103 @@
   color: #ddd6fe;
 }
 
-.plate-caption-bar {
+.fw-open-pill {
+  position: relative;
+  z-index: 1;
+  align-self: flex-end;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.28);
+  border: 1px solid rgba(192, 132, 252, 0.5);
+  color: #f8f7ff;
+  backdrop-filter: blur(6px);
+}
+
+.fw-tile-body {
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  background: rgba(9, 9, 15, 0.68);
-  backdrop-filter: blur(8px);
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 8px;
+  flex: 1;
 }
 
-.plate-caption-bar strong {
-  font-size: 14px;
-  color: #ffffff;
+.fw-tile-cat {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a78bfa;
 }
 
-.plate-caption-bar span {
+.fw-tile-body h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.fw-tile-body p {
+  margin: 0;
+  color: #aaa8bc;
+  font-size: 13px;
+  line-height: 1.65;
+  flex: 1;
+}
+
+.fw-tile-role {
+  margin-top: 6px;
   font-size: 12px;
   color: #c4b5fd;
-  line-height: 1.5;
+  font-weight: 600;
 }
 
-.behance-card-footer {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid #28243b;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.behance-swatches {
-  display: flex;
-  gap: 8px;
-}
-
-.behance-swatches span {
-  width: 18px;
-  height: 18px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.behance-meta {
-  font-size: 12px;
-  color: #9995aa;
-}
-
-/* Full-Screen Viewer */
-.behance-viewer-overlay {
+/* FULL-WINDOW SCROLLABLE VIEWER */
+.fw-window-modal {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  width: 100vw;
+  height: 100vh;
+  z-index: 3000;
   background: #07070d;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
-.behance-viewer-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  padding: 14px 5%;
+.fw-window-topbar {
+  flex-shrink: 0;
+  padding: 14px 4%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
-  background: rgba(11, 10, 19, 0.9);
-  backdrop-filter: blur(12px);
+  background: rgba(12, 11, 21, 0.96);
   border-bottom: 1px solid #28243b;
 }
 
-.viewer-title-group {
+.fw-window-meta {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.viewer-cat {
+.fw-window-badge {
   font-size: 11px;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(139, 92, 246, 0.2);
-  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.22);
+  color: #ddd6fe;
 }
 
-.viewer-controls {
+.fw-window-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.viewer-btn,
-.viewer-close-btn {
+.fw-nav-btn,
+.fw-close-btn {
   padding: 8px 14px;
   border-radius: 8px;
   border: 1px solid #3c3556;
@@ -329,142 +265,138 @@
   cursor: pointer;
 }
 
-.viewer-btn:disabled {
+.fw-nav-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-.viewer-close-btn {
+.fw-close-btn {
   background: #7c3aed;
   border-color: #a78bfa;
 }
 
-.behance-viewer-canvas {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 48px 24px 90px;
+/* Scrollable full-window canvas for tall designs */
+.fw-window-scroll-area {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 40px 4% 96px;
 }
 
-.viewer-hero-band h1 {
-  font-size: clamp(28px, 4.5vw, 48px);
-  margin: 10px 0 14px;
+.fw-window-inner {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.fw-project-banner {
+  margin-bottom: 32px;
+}
+
+.fw-project-banner h1 {
+  margin: 10px 0 12px;
+  font-size: clamp(28px, 4.5vw, 46px);
   line-height: 1.15;
 }
 
-.viewer-hero-band p {
+.fw-project-banner p {
+  margin: 0;
   color: #b8b5cc;
   font-size: 15px;
   line-height: 1.8;
-  max-width: 760px;
+  max-width: 780px;
 }
 
-.viewer-specs {
-  margin-top: 18px;
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  font-size: 13px;
-  color: #c4b5fd;
-}
-
-.viewer-full-figure {
-  margin: 32px 0;
-  border-radius: 16px;
+/* Tall uploaded image or tall multi-band scroll layout */
+.fw-tall-artwork-frame {
+  width: 100%;
+  border-radius: 18px;
   overflow: hidden;
   border: 1px solid #2e2944;
-  background: #110f1c;
+  background: #100e1b;
 }
 
-.viewer-full-figure img {
+.fw-tall-artwork-img {
   width: 100%;
-  max-height: 82vh;
-  object-fit: contain;
+  height: auto;
   display: block;
 }
 
-.viewer-full-figure figcaption {
-  padding: 12px 16px;
-  font-size: 12px;
-  color: #9995aa;
-  border-top: 1px solid #242036;
-}
-
-.viewer-blocks {
-  margin-top: 32px;
+.fw-tall-canvas-stack {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
-.viewer-story-block {
-  padding: 28px;
-  border-radius: 16px;
-  background: #12101d;
-  border: 1px solid #29243d;
-}
-
-.viewer-story-block h3 {
-  margin: 0 0 10px;
-  font-size: 20px;
-}
-
-.viewer-story-block p {
-  margin: 0;
-  color: #b8b5cc;
-  line-height: 1.8;
-  font-size: 14px;
-}
-
-.viewer-visual-block {
+.fw-tall-band {
   position: relative;
-  border-radius: 18px;
+  width: 100%;
+  border-radius: 20px;
   border: 1px solid rgba(167, 139, 250, 0.28);
-  padding: 32px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
+  justify-content: space-between;
 }
 
-.viewer-visual-block.is-wide {
-  min-height: 360px;
+.tall-band-lg {
+  min-height: 540px;
 }
 
-.viewer-visual-block.is-tall {
-  min-height: 520px;
+.tall-band-xl {
+  min-height: 760px;
 }
 
-.viewer-visual-overlay {
-  background: rgba(9, 9, 15, 0.75);
-  backdrop-filter: blur(8px);
+.fw-band-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(9, 9, 15, 0.72);
+  border: 1px solid rgba(192, 132, 252, 0.35);
+  color: #ddd6fe;
+}
+
+.fw-band-footer {
   padding: 18px 20px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(9, 9, 15, 0.76);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.viewer-visual-overlay strong {
-  display: block;
-  font-size: 16px;
-  margin-bottom: 6px;
-}
-
-.viewer-visual-overlay p {
+.fw-band-footer p {
   margin: 0;
-  font-size: 13px;
-  color: #c4b5fd;
-  line-height: 1.6;
+  font-size: 14px;
+  color: #e9d5ff;
+  line-height: 1.7;
 }
 
-@media (max-width: 720px) {
-  .behance-section {
+@media (max-width: 960px) {
+  .fw-project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .fw-portfolio {
     padding: 45px 6%;
   }
 
-  .composer-grid {
+  .fw-project-grid,
+  .fw-composer-grid {
     grid-template-columns: 1fr;
   }
 
-  .behance-project-card {
-    padding: 18px;
+  .tall-band-lg {
+    min-height: 420px;
+  }
+
+  .tall-band-xl {
+    min-height: 580px;
   }
 }
