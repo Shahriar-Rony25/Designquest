@@ -9,6 +9,9 @@ export default function HomePage() {
   const [colorRewards, setColorRewards] = useState([false, false, false]);
   const [hasLoaded, setHasLoaded] = useState(false);
 
+  // Interactive 3D Hero Tilt State
+  const [heroTilt, setHeroTilt] = useState({ rx: 6, ry: -10 });
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem("designquest-progress");
@@ -185,28 +188,89 @@ export default function HomePage() {
     { id: 5, name: "Pro Designer World", reqXP: 800, icon: "👑", desc: "The ultimate peak for master creators building professional portfolios and client case studies.", unlocked: xp >= 800 }
   ];
 
+  // Pointer handler for 3D perspective stage
+  const handleHeroMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    setHeroTilt({
+      rx: Number((-ny * 14).toFixed(2)),
+      ry: Number((nx * 18).toFixed(2)),
+    });
+  };
+
+  const handleHeroMouseLeave = () => {
+    setHeroTilt({ rx: 6, ry: -10 });
+  };
+
+  const currentWorldObj =
+    worldsData.find((w) => w.id === level) || worldsData[0];
+
   return (
     <>
-      {/* Hero Section */}
-      <header id="home" className="hero">
+      {/* 3D Hero Section */}
+      <header
+        id="home"
+        className="hero hero-3d-stage"
+        onMouseMove={handleHeroMouseMove}
+        onMouseLeave={handleHeroMouseLeave}
+      >
+        <div className="hero-3d-grid" aria-hidden="true" />
+
         <div className="hero-content">
-          <span className="eyebrow">GAMIFIED CREATIVE ECOSYSTEM</span>
-          <h1>Level Up Your <span>Design Skills</span> & Portfolio</h1>
-          <p>Embark on creative adventures, master graphic design principles through interactive missions, and showcase your work to the community.</p>
-          <a href="#missions" className="primary-btn">
-            Start Learning Now 🚀
-          </a>
-        </div>
-        <div className="hero-visual">
-          <div className="floating-card">
-            <span>🏆</span>
-            <div>
-              <strong>Level {level} Creator</strong>
-              <small>Design Explorer</small>
-            </div>
+          <span className="eyebrow">3D GAMIFIED CREATIVE ECOSYSTEM</span>
+          <h1>
+            Level Up Your <span>Design Skills</span> &amp; Portfolio
+          </h1>
+          <p>
+            Embark on creative adventures, master graphic design principles
+            through interactive missions, and showcase your work to the
+            community.
+          </p>
+
+          <div className="hero-actions">
+            <a href="#missions" className="primary-btn">
+              Start Learning Now 🚀
+            </a>
+            <a href="#world" className="secondary-hero-btn">
+              Explore World Map 🗺️
+            </a>
           </div>
-          <div className="hero-art">🎨</div>
-          <div className="floating-xp">+{xp} XP Total</div>
+        </div>
+
+        <div className="hero-3d-viewport">
+          <div
+            className="hero-3d-cube-stack"
+            style={{
+              transform: `rotateX(${heroTilt.rx}deg) rotateY(${heroTilt.ry}deg)`,
+            }}
+          >
+            <div className="hero-3d-backplate">
+              <div className="hero-3d-swatches">
+                <span style={{ background: "#8b5cf6" }} />
+                <span style={{ background: "#ec4899" }} />
+                <span style={{ background: "#38bdf8" }} />
+                <span style={{ background: "#facc15" }} />
+              </div>
+              <small>
+                3D DEPTH · {completed.length}/4 MISSIONS DONE
+              </small>
+            </div>
+
+            <div className="hero-3d-core">
+              <div className="hero-art">🎨</div>
+            </div>
+
+            <div className="floating-card">
+              <span>🏆</span>
+              <div>
+                <strong>Level {level} Creator</strong>
+                <small>{currentWorldObj.name}</small>
+              </div>
+            </div>
+
+            <div className="floating-xp">+{xp} XP Total</div>
+          </div>
         </div>
       </header>
 

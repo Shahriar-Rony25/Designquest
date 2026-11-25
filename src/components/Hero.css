@@ -1,0 +1,309 @@
+.dq-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: clamp(2rem, 5vw, 4rem);
+  background: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.24), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.18), transparent 45%),
+    linear-gradient(160deg, #151126 0%, #1d1736 55%, #120f22 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 28px 70px -20px rgba(0, 0, 0, 0.65);
+  color: #f8fafc;
+}
+
+.dq-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at 70% 45%, #000 20%, transparent 78%);
+  pointer-events: none;
+}
+
+.dq-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(70px);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.dq-orb-violet {
+  width: 280px;
+  height: 280px;
+  top: -70px;
+  right: 12%;
+  background: #7c3aed;
+}
+
+.dq-orb-pink {
+  width: 220px;
+  height: 220px;
+  bottom: -60px;
+  right: 28%;
+  background: #db2777;
+}
+
+.dq-hero-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.dq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e9d5ff;
+  margin-bottom: 1.1rem;
+}
+
+.dq-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a855f7;
+  box-shadow: 0 0 12px #a855f7;
+}
+
+.dq-hero-title {
+  font-size: clamp(2.1rem, 4.2vw, 3.45rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  margin: 0 0 1rem;
+}
+
+.dq-hero-title span {
+  display: block;
+  background: linear-gradient(90deg, #c084fc 0%, #f472b6 55%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dq-hero-subtitle {
+  margin: 0 0 1.75rem;
+  max-width: 54ch;
+  line-height: 1.65;
+  color: #cbd5e1;
+  font-size: 1rem;
+}
+
+.dq-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 2rem;
+}
+
+.dq-btn-primary,
+.dq-btn-secondary {
+  border-radius: 12px;
+  padding: 0.8rem 1.35rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.dq-btn-primary {
+  border: none;
+  color: #ffffff;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  box-shadow: 0 12px 26px -8px rgba(124, 58, 237, 0.75);
+}
+
+.dq-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px -8px rgba(219, 39, 119, 0.75);
+}
+
+.dq-btn-secondary {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.dq-btn-secondary:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.dq-hero-metrics {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+}
+
+.dq-metric strong {
+  display: block;
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+.dq-metric span {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.dq-metric-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.dq-stage-perspective {
+  perspective: 1150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+}
+
+.dq-3d-stack {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: 290px;
+  transform-style: preserve-3d;
+  transition: transform 0.22s ease-out;
+}
+
+.dq-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+.dq-layer-back {
+  background: rgba(56, 42, 98, 0.55);
+  transform: translate3d(24px, -22px, -70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dq-tag {
+  font-size: 0.75rem;
+  color: #ddd6fe;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dq-swatches {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dq-swatches i {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dq-layer-mid {
+  background: rgba(41, 31, 76, 0.72);
+  transform: translate3d(12px, -10px, -35px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+.dq-mini-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #f472b6;
+  font-weight: 600;
+}
+
+.dq-layer-mid p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #e2e8f0;
+}
+
+.dq-layer-front {
+  background: linear-gradient(145deg, rgba(36, 28, 68, 0.92), rgba(22, 18, 43, 0.95));
+  transform: translate3d(0, 0, 10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-color: rgba(192, 132, 252, 0.35);
+}
+
+.dq-card-badge {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #e9d5ff;
+  border: 1px solid rgba(192, 132, 252, 0.35);
+}
+
+.dq-layer-front h3 {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1.35rem;
+}
+
+.dq-layer-front p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+}
+
+.dq-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #a5b4fc;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dq-status-dot {
+  color: #34d399;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .dq-hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .dq-stage-perspective {
+    min-height: 260px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dq-3d-stack,
+  .dq-btn-primary,
+  .dq-btn-secondary {
+    transition: none;
+  }
+}
