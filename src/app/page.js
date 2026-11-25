@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 export default function HomePage() {
   // Persistent XP and Progress State (safe in Next.js SSR + client)
@@ -31,10 +31,14 @@ export default function HomePage() {
   // Save progress automatically after initial load
   useEffect(() => {
     if (!hasLoaded) return;
-    localStorage.setItem(
-      "designquest-progress",
-      JSON.stringify({ xp, completed, colorRewards })
-    );
+    try {
+      localStorage.setItem(
+        "designquest-progress",
+        JSON.stringify({ xp, completed, colorRewards })
+      );
+    } catch (e) {
+      console.error("Failed to save progress", e);
+    }
   }, [xp, completed, colorRewards, hasLoaded]);
 
   // Level Calculations
@@ -49,8 +53,8 @@ export default function HomePage() {
   const [quizScore, setQuizScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
 
-  // World Map Modal State
-  const [selectedWorld, setSelectedWorld] = useState(null);
+  // World Map Selection State
+  const [selectedWorldId, setSelectedWorldId] = useState(null);
 
   // Quiz Datasets for Missions 1, 2, and 3
   const missionQuizzes = {
@@ -179,14 +183,78 @@ export default function HomePage() {
     }
   };
 
-  // World Map Data
-  const worldsData = [
-    { id: 1, name: "Design Island", reqXP: 0, icon: "🏝️", desc: "The starting grounds where every creator learns core foundational elements like contrast and alignment.", unlocked: true },
-    { id: 2, name: "Color Kingdom", reqXP: 150, icon: "🏰", desc: "A vibrant realm ruled by palettes, harmonies, and contrast ratios.", unlocked: xp >= 150 },
-    { id: 3, name: "Typography City", reqXP: 300, icon: "🏙️", desc: "A towering metropolis dedicated to font pairings, kerning, leading, and legibility.", unlocked: xp >= 300 },
-    { id: 4, name: "Creative Valley", reqXP: 500, icon: "🌄", desc: "An advanced expanse focusing on layout flow, branding systems, and visual pacing.", unlocked: xp >= 500 },
-    { id: 5, name: "Pro Designer World", reqXP: 800, icon: "👑", desc: "The ultimate peak for master creators building professional portfolios and client case studies.", unlocked: xp >= 800 }
-  ];
+  // Upgraded World Map Data with Realm Tips & Suggested Mission
+  const worldsData = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Design Island",
+        reqXP: 0,
+        icon: "🏝️",
+        badge: "Foundations Explorer",
+        missionId: 1,
+        tip: "Pair strong contrast with clear alignment before adding decorative effects.",
+        desc: "The starting grounds where every creator learns core foundational elements like contrast and alignment.",
+        unlocked: true,
+      },
+      {
+        id: 2,
+        name: "Color Kingdom",
+        reqXP: 150,
+        icon: "🏰",
+        badge: "Chroma Tactician",
+        missionId: 2,
+        tip: "Let dark neutral surfaces carry depth while your primary accent leads the eye.",
+        desc: "A vibrant realm ruled by palettes, harmonies, and contrast ratios.",
+        unlocked: xp >= 150,
+      },
+      {
+        id: 3,
+        name: "Typography City",
+        reqXP: 300,
+        icon: "🏙️",
+        badge: "Type Architect",
+        missionId: 3,
+        tip: "Keep line length readable and tune kerning/leading so headlines breathe.",
+        desc: "A towering metropolis dedicated to font pairings, kerning, leading, and legibility.",
+        unlocked: xp >= 300,
+      },
+      {
+        id: 4,
+        name: "Creative Valley",
+        reqXP: 500,
+        icon: "🌄",
+        badge: "Spatial Composer",
+        missionId: 3,
+        tip: "Use layered depth planes and consistent spacing tokens across sections.",
+        desc: "An advanced expanse focusing on layout flow, branding systems, and visual pacing.",
+        unlocked: xp >= 500,
+      },
+      {
+        id: 5,
+        name: "Pro Designer World",
+        reqXP: 800,
+        icon: "👑",
+        badge: "Studio Grandmaster",
+        missionId: 3,
+        tip: "Document your design decisions and showcase cohesive work in your portfolio.",
+        desc: "The ultimate peak for master creators building professional portfolios and client case studies.",
+        unlocked: xp >= 800,
+      },
+    ],
+    [xp]
+  );
+
+  const selectedWorld = useMemo(
+    () => worldsData.find((w) => w.id === selectedWorldId) || null,
+    [worldsData, selectedWorldId]
+  );
+
+  const unlockedWorldsCount = worldsData.filter((w) => w.unlocked).length;
+  const mapProgressPercent = Math.min(
+    100,
+    Math.round(((unlockedWorldsCount - 1) / (worldsData.length - 1)) * 100)
+  );
 
   // Pointer handler for 3D perspective stage
   const handleHeroMouseMove = (e) => {
@@ -205,6 +273,15 @@ export default function HomePage() {
 
   const currentWorldObj =
     worldsData.find((w) => w.id === level) || worldsData[0];
+
+  const handleJumpToWorldMission = (world) => {
+    setSelectedWorldId(null);
+    if (missionQuizzes[world.missionId]) {
+      handleStartMission(world.missionId);
+    } else {
+      document.getElementById("missions")?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <>
@@ -398,43 +475,105 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* World Map Section */}
+      {/* Upgraded World Map Section */}
       <section id="world" className="world-section">
         <div className="section-heading">
           <div>
             <h2>DesignQuest World Map</h2>
-            <p>Click any world node below to inspect its realm and requirements.</p>
+            <p>
+              {unlockedWorldsCount} of {worldsData.length} realms unlocked · Click any realm node to inspect studio tips and launch practice.
+            </p>
           </div>
-          <span className="world-rank">Current World: Level {level}</span>
+          <span className="world-rank">Current World: {currentWorldObj.name}</span>
         </div>
 
-        <div className="world-map">
-          <div className="map-path"></div>
-          {worldsData.map((world) => (
+        <div className="world-map world-map-upgraded">
+          <div className="map-path">
             <div
-              key={world.id}
-              className={`world-node ${world.unlocked ? "unlocked" : "locked"} ${level === world.id ? "active-node" : ""}`}
-              onClick={() => setSelectedWorld(world)}
-            >
-              <span className="node-icon">{world.icon}</span>
-              <span className="node-number">WORLD {world.id}</span>
-              <strong>{world.name}</strong>
-              <small>{world.unlocked ? "🔓 Unlocked" : `🔒 Req: ${world.reqXP} XP`}</small>
-            </div>
-          ))}
+              className="map-path-fill"
+              style={{ width: `${mapProgressPercent}%` }}
+            />
+          </div>
+
+          {worldsData.map((world) => {
+            const isSelected = selectedWorld?.id === world.id;
+            const isCurrent = currentWorldObj.id === world.id;
+            const xpRemaining = Math.max(0, world.reqXP - xp);
+
+            return (
+              <button
+                key={world.id}
+                type="button"
+                className={`world-node ${world.unlocked ? "unlocked" : "locked"} ${
+                  isCurrent ? "active-node" : ""
+                } ${isSelected ? "selected-node" : ""}`}
+                onClick={() => setSelectedWorldId(world.id)}
+              >
+                <span className="node-icon">{world.icon}</span>
+                <span className="node-number">WORLD {world.id}</span>
+                <strong>{world.name}</strong>
+                <small>
+                  {world.unlocked
+                    ? isCurrent
+                      ? "✦ Active Realm"
+                      : "🔓 Unlocked"
+                    : `🔒 ${xpRemaining} XP left`}
+                </small>
+              </button>
+            );
+          })}
         </div>
 
         {selectedWorld && (
-          <div className="world-details">
+          <div className="world-details world-details-upgraded">
             <div className="world-detail-content">
               <span className="detail-icon">{selectedWorld.icon}</span>
-              <div>
-                <h3>World {selectedWorld.id}: {selectedWorld.name}</h3>
+              <div style={{ flex: 1 }}>
+                <div className="world-detail-meta">
+                  <span className="world-badge">🏅 {selectedWorld.badge}</span>
+                  <small>
+                    {selectedWorld.unlocked
+                      ? `Unlocked (Req: ${selectedWorld.reqXP} XP)`
+                      : `Locked · ${xp} / ${selectedWorld.reqXP} XP`}
+                  </small>
+                </div>
+                <h3>
+                  World {selectedWorld.id}: {selectedWorld.name}
+                </h3>
                 <p>{selectedWorld.desc}</p>
-                <small>Required XP: {selectedWorld.reqXP} XP {selectedWorld.unlocked ? "— Status: Unlocked & Accessible!" : "— Status: Locked (Keep earning XP!)"}</small>
+                <p className="world-craft-tip">
+                  <strong>Studio Tip:</strong> {selectedWorld.tip}
+                </p>
+
+                {!selectedWorld.unlocked && (
+                  <div className="progress-track" style={{ marginTop: "10px", height: "8px" }}>
+                    <div
+                      className="progress-fill"
+                      style={{
+                        width: `${Math.min(100, Math.round((xp / selectedWorld.reqXP) * 100))}%`,
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
-            <button className="mission-btn" onClick={() => setSelectedWorld(null)}>Close Details</button>
+
+            <div className="world-detail-actions">
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={() => handleJumpToWorldMission(selectedWorld)}
+              >
+                {selectedWorld.unlocked ? "Practice Realm Quiz" : "Earn XP in Quiz"}
+              </button>
+              <button
+                type="button"
+                className="mission-btn"
+                onClick={() => setSelectedWorldId(null)}
+              >
+                Close Details
+              </button>
+            </div>
           </div>
         )}
       </section>
